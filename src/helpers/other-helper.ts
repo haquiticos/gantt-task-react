@@ -59,3 +59,18 @@ export const sortTasks = (taskA: Task, taskB: Task) => {
     return 0;
   }
 };
+// parei aqui, tem algo muito errado
+export function getParents (tasks: Task[], task: Task): Task[] {
+  let newTasks: Task[] = [];
+  if (task.project === ""){
+    newTasks.push(task)
+    return newTasks
+  } else {
+    const parent = tasks.find(t => t.id === task.project)
+    if (! parent)
+      return []
+    newTasks.push(task)
+    return newTasks.concat(getParents(tasks,parent))
+    
+  }  
+}

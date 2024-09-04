@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import styles from "./task-list-table.module.css";
 import { Task } from "../../types/public-types";
+import { getParents} from "../../helpers/other-helper";
+
 
 const localeDateStringCache = {};
 const toLocaleDateStringFactory =
@@ -72,6 +74,7 @@ export const TaskListTableDefault: React.FC<{
               style={{
                 minWidth: rowWidth,
                 maxWidth: rowWidth,
+                paddingLeft: getParents(tasks,t).length*5
               }}
               title={t.name}
             >
