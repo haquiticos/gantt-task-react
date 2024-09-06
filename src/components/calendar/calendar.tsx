@@ -17,7 +17,6 @@ export type CalendarProps = {
   viewMode: ViewMode;
   rtl: boolean;
   headerHeight: number;
-  svgWidth: number;
   columnWidth: number;
   fontFamily: string;
   fontSize: string;
@@ -30,7 +29,6 @@ export const Calendar: React.FC<CalendarProps> = ({
   rtl,
   headerHeight,
   columnWidth,
-  svgWidth,
   fontFamily,
   fontSize,
 }) => {
@@ -84,9 +82,8 @@ export const Calendar: React.FC<CalendarProps> = ({
     const topDefaultHeight = headerHeight * 0.5;
     for (let i = 0; i < dateSetup.dates.length; i++) {
       const date = dateSetup.dates[i];
-
-      const quarterNumber = Math.floor((date.getMonth()) / 3);
-      const quarter = "Q" + (quarterNumber + 1);
+      // const bottomValue = getLocaleMonth(date, locale);
+      const quarter = "Q" + Math.floor((date.getMonth() + 3) / 3);
       bottomValues.push(
         <text
           key={date.getTime()}
@@ -104,13 +101,9 @@ export const Calendar: React.FC<CalendarProps> = ({
         const topValue = date.getFullYear().toString();
         let xText: number;
         if (rtl) {
-          xText = (2 + i + quarterNumber + 1) * columnWidth;
+          xText = (6 + i + date.getMonth() + 1) * columnWidth;
         } else {
-          xText = (2 + i - quarterNumber) * columnWidth;
-          // For first year display year in the middle of the visible scope
-          if (i === 0) {
-            xText = ((4 - quarterNumber) / 2) * columnWidth;
-          }
+          xText = (6 + i - date.getMonth()) * columnWidth;
         }
         topValues.push(
           <TopPartOfCalendar
@@ -155,11 +148,6 @@ export const Calendar: React.FC<CalendarProps> = ({
           xText = (6 + i + date.getMonth() + 1) * columnWidth;
         } else {
           xText = (6 + i - date.getMonth()) * columnWidth;
-
-          // For first year display year in the middle of the visible scope
-          if (i === 0) {
-            xText = ((12 - date.getMonth()) / 2) * columnWidth;
-          }
         }
         topValues.push(
           <TopPartOfCalendar
@@ -392,25 +380,16 @@ export const Calendar: React.FC<CalendarProps> = ({
     case ViewMode.Hour:
       [topValues, bottomValues] = getCalendarValuesForHour();
   }
-  const terminalX = dateSetup.dates.length * columnWidth;
   return (
     <g className="calendar" fontSize={fontSize} fontFamily={fontFamily}>
       <rect
         x={0}
         y={0}
-        width={svgWidth}
+        width={columnWidth * dateSetup.dates.length}
         height={headerHeight}
         className={styles.calendarHeader}
       />
       {bottomValues} {topValues}
-      <line
-        x1={terminalX}
-        y1={0}
-        x2={terminalX}
-        y2={headerHeight}
-        className={styles.calendarTopTick}
-        key={"terminal-line"}
-      />
     </g>
   );
 };
